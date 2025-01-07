@@ -23,14 +23,19 @@ jobs:
 
       - name: Download Minikube binary for ppc64le
         run: |
-          MINIKUBE_VERSION=v1.30.0
+          MINIKUBE_VERSION=v1.34.0
           curl -LO https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-ppc64le
           chmod +x minikube-linux-ppc64le
           sudo mv minikube-linux-ppc64le /usr/local/bin/minikube
 
+      - name: Install Dependencies (conntrack and others)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y conntrack socat
+
       - name: Start Minikube (ppc64le)
         run: |
-          sudo minikube start --driver=none --force --kubernetes-version=v1.26.0
+          sudo minikube start --driver=none --force --kubernetes-version=v1.32.0
 
       - name: Verify Minikube Status
         run: minikube status
