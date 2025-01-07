@@ -1,0 +1,40 @@
+name: E2E Tests with Minikube (ppc64le)
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+      - 'main'
+
+jobs:
+  test-e2e:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Set up QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu qemu-user-static
+
+      - name: Enable QEMU support for GitHub Actions
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: ppc64le
+
+      - name: Download Minikube binary for ppc64le
+        run: |
+          MINIKUBE_VERSION=v1.30.0
+          curl -LO https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-ppc64le
+          chmod +x minikube-linux-ppc64le
+          sudo mv minikube-linux-ppc64le /usr/local/bin/minikube
+
+      - name: Start Minikube (ppc64le)
+        run: |
+          sudo minikube start --driver=none --force --kubernetes-version=v1.26.0
+
+      - name: Verify Minikube Status
+        run: minikube status
+
+      - name: Run End-to-End Tests
+        run: |
+          echo "Running e2e tests on Minikube (ppc64le)"
+          # Add your test commands here
