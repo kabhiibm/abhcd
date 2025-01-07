@@ -31,7 +31,7 @@ jobs:
       - name: Install Dependencies (conntrack and others)
         run: |
           sudo apt-get update
-          sudo apt-get install -y conntrack socat
+          sudo apt-get install -y conntrack socat crictl
 
       - name: Start Minikube (ppc64le)
         run: |
