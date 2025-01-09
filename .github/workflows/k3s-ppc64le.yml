@@ -1,0 +1,53 @@
+name: K3s on PPC64LE
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  k3s-ppc64le:
+    runs-on: ubuntu-22.04
+    name: Set up K3s on PPC64LE
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up QEMU for PPC64LE
+      - name: Set up QEMU for PPC64LE
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ppc64le
+
+      # Step 3: Set up Docker Buildx for cross-building
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 4: Build K3s for PPC64LE
+      - name: Build K3s from Source for PPC64LE
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git make gcc
+          git clone https://github.com/k3s-io/k3s.git
+          cd k3s
+          make package ARCH=ppc64le
+          ls -l dist
+
+      # Step 5: Run K3s Server on PPC64LE Docker Container
+      - name: Run K3s Server
+        run: |
+          docker run --rm --privileged --platform linux/ppc64le ubuntu:20.04 /bin/bash -c "
+          apt-get update &&
+          apt-get install -y curl &&
+          curl -sfL https://get.k3s.io | sh -
+          "
+
+      # Step 6: Verify K3s Cluster
+      - name: Verify K3s Server
+        run: |
+          docker ps
+          docker exec k3s k3s kubectl get nodes
+
