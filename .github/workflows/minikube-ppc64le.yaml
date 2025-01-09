@@ -43,7 +43,7 @@ jobs:
       - name: Start Minikube Cluster
         run: |
           K_VERSION=v1.31.0
-          minikube start --driver=docker --kubernetes-version=${K_VERSION} --container-runtime=containerd --architecture=ppc64le
+          minikube start --driver=docker --kubernetes-version=${K_VERSION} --container-runtime=containerd
 
       # Step 7: Verify Minikube Cluster Status
       - name: Verify Minikube Cluster
