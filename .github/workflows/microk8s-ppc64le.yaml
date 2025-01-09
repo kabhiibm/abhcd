@@ -21,6 +21,15 @@ jobs:
         with:
           platforms: linux/ppc64le
 
+      - name: Check system architecture
+        run: |
+          ARCHITECTURE=$(uname -m)
+          echo "Detected architecture: $ARCHITECTURE"
+          if [ "$ARCHITECTURE" != "ppc64le" ]; then
+            echo "This job is intended to run on ppc64le architecture only. Exiting..."
+            exit 1
+          fi
+
       - name: Install Docker from official Docker repository
         run: |
           sudo apt-get update
