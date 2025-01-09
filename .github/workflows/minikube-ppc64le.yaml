@@ -42,8 +42,8 @@ jobs:
       # Step 6: Start Minikube using QEMU
       - name: Start Minikube Cluster
         run: |
-          K_VERSION=v1.32.0
-          minikube start --driver=docker --kubernetes-version=${K_VERSION} --container-runtime=cri-o
+          K_VERSION=v1.31.0
+          minikube start --driver=docker --kubernetes-version=${K_VERSION} --container-runtime=containerd --architecture=ppc64le
 
       # Step 7: Verify Minikube Cluster Status
       - name: Verify Minikube Cluster
