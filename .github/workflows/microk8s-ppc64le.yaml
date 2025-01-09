@@ -21,15 +21,6 @@ jobs:
         with:
           platforms: linux/ppc64le
 
-      - name: Check system architecture
-        run: |
-          ARCHITECTURE=$(uname -m)
-          echo "Detected architecture: $ARCHITECTURE"
-          if [ "$ARCHITECTURE" != "ppc64le" ]; then
-            echo "This job is intended to run on ppc64le architecture only. Exiting..."
-            exit 1
-          fi
-
       - name: Install Docker from official Docker repository
         run: |
           sudo apt-get update
@@ -61,6 +52,15 @@ jobs:
       - name: Wait for MicroK8s to be ready
         run: |
           sudo microk8s status --wait-ready
+
+      - name: Verify ppc64le architecture in MicroK8s
+        run: |
+          MICROK8S_ARCH=$(sudo microk8s kubectl run --rm -i --tty busybox --image=busybox --restart=Never --command -- uname -m)
+          echo "MicroK8s architecture: $MICROK8S_ARCH"
+          if [ "$MICROK8S_ARCH" != "ppc64le" ]; then
+            echo "Emulation failed or wrong architecture. Expected ppc64le but got $MICROK8S_ARCH"
+            exit 1
+          fi
 
       - name: Test MicroK8s Cluster
         run: |
