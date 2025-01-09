@@ -1,0 +1,51 @@
+name: Minikube Cluster on PPC64LE
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  minikube-ppc64le:
+    runs-on: ubuntu-22.04
+    name: Set up Minikube Cluster on PPC64LE
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up QEMU to emulate PPC64LE architecture
+      - name: Set up QEMU for PPC64LE
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ppc64le
+
+      # Step 3: Set up Docker Buildx for cross-building
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 4: Pull a PPC64LE-compatible Ubuntu image to test QEMU
+      - name: Pull Ubuntu Image for PPC64LE
+        run: |
+          docker pull --platform linux/ppc64le ubuntu:20.04
+          docker run --rm --platform linux/ppc64le ubuntu:20.04 uname -m
+
+      # Step 5: Download and install Minikube for PPC64LE
+      - name: Download Minikube Binary for PPC64LE
+        run: |
+          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-ppc64le
+          chmod +x minikube-linux-ppc64le
+          sudo mv minikube-linux-ppc64le /usr/local/bin/minikube
+
+      # Step 6: Start Minikube using QEMU
+      - name: Start Minikube Cluster
+        run: |
+          K_VERSION=v1.32.0
+          minikube start --driver=docker --kubernetes-version=${K_VERSION} --container-runtime=cri-o
+
+      # Step 7: Verify Minikube Cluster Status
+      - name: Verify Minikube Cluster
+        run: |
+          minikube status
