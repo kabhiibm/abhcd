@@ -17,10 +17,10 @@ jobs:
         with:
           platforms: ppc64le
 
-      - name: Install qemu-utils
+      - name: Install qemu-utils and qemu-system-ppc64le
         run: |
           sudo apt update
-          sudo apt install -y qemu-utils
+          sudo apt install -y qemu-utils qemu-system-ppc64le
 
       - name: Create qemu image
         run: |
