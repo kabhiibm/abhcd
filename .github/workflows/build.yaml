@@ -1,0 +1,34 @@
+name: MK8s on PPC64LE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ppc64le
+
+      - name: Create qemu image
+        run: |
+          qemu-img create -f qcow2 ppc64le.img 10G
+
+      - name: Start qemu
+        run: |
+          qemu-system-ppc64le -m 2048 -cpu host -enable-kvm -drive if=none,id=root,format=qcow2,file=ppc64le.img -device virtio-net,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22 -vnc :0
+
+      - name: Install MicroK8s
+        run: |
+          ssh -p 2222 -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" root@localhost 'sudo snap install microk8s --classic'
+
+      - name: Verify MicroK8s
+        run: |
+          ssh -p 2222 -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" root@localhost 'microk8s.kubectl get nodes'
