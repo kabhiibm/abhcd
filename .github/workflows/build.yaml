@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
 
       - name: Start qemu
         run: |
-          qemu-system-ppc64le -m 2048 -cpu host -drive if=none,id=root,format=qcow2,file=ppc64le.img -device virtio-net,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22 -vnc :0
+          qemu-system-ppc64le -m 2048 -cpu POWER9 -drive if=none,id=root,format=qcow2,file=ppc64le.img -device virtio-net,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22 -vnc :0
 
       - name: Install MicroK8s
         run: |
@@ -36,4 +36,4 @@ jobs:
 
       - name: Verify MicroK8s
         run: |
-          ssh -p 2222 -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" root@localhost 'microk8s.kubectl get nodes'
+          ssh -p 2222 -o "StrictHostKeyChecking=n
