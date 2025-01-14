@@ -26,13 +26,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y qemu-system-ppc64
 
-      - name: Download Ubuntu 20.04 LTS image for PPC64LE
+      - name: Create a minimal Ubuntu 20.04 LTS rootfs for PPC64LE
         run: |
-          wget http://cdimage.ubuntu.com/ubuntu/releases/22.04/release/ubuntu-22.04.5-live-server-ppc64el.iso
+          wget http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.4-base-ppc64el.tar.gz
+          tar -xvf ubuntu-base-20.04.4-base-ppc64el.tar.gz
+          sudo mv ubuntu-base-20.04.4-base-ppc64el /mnt
 
       - name: Create QEMU virtual machine
         run: |
-          qemu-system-ppc64 -m 2048 -vnc :0 -cdrom ubuntu-20.04-server-ppc64el.iso -boot d &
+          qemu-system-ppc64 -m 2048 -vnc :0 -kernel /mnt/boot/vmlinuz-5.4.0-42-generic -initrd /mnt/boot/initrd.img-5.4.0-42-generic -append "root=/dev/sda1" -hda /mnt/rootfs.img &
           sleep 30
 
       - name: Install MicroK8s
