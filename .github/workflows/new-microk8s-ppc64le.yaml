@@ -28,7 +28,7 @@ jobs:
 
       - name: Download Ubuntu 20.04 LTS image for PPC64LE
         run: |
-          wget http://cdimage.ubuntu.com/ubuntu/releases/20.04/release/ubuntu-20.04-server-ppc64el.iso
+          wget http://cdimage.ubuntu.com/ubuntu/releases/22.04/release/ubuntu-22.04.5-live-server-ppc64el.iso
 
       - name: Create QEMU virtual machine
         run: |
