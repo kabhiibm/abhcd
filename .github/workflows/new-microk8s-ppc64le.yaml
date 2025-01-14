@@ -1,0 +1,57 @@
+name: MicroK8s with QEMU (ppc64le)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  microk8s-setup:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU for ppc64le emulation
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/ppc64le
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-ppc64
+
+      - name: Download Ubuntu 20.04 LTS image for PPC64LE
+        run: |
+          wget http://cdimage.ubuntu.com/ubuntu/releases/20.04/release/ubuntu-20.04-server-ppc64el.iso
+
+      - name: Create QEMU virtual machine
+        run: |
+          qemu-system-ppc64 -m 2048 -vnc :0 -cdrom ubuntu-20.04-server-ppc64el.iso -boot d &
+          sleep 30
+
+      - name: Install MicroK8s
+        run: |
+          sudo snap install microk8s --classic
+          sudo microk8s.kubectl config set-cluster microk8s --server=https://localhost:16443
+          sudo microk8s.kubectl config set-context microk8s --cluster=microk8s
+          sudo microk8s.kubectl config use-context microk8s
+
+      - name: Start MicroK8s cluster
+        run: |
+          sudo microk8s.start
+          sleep 30
+
+      - name: Test cluster architecture
+        run: |
+          ARCH=$(sudo microk8s.kubectl get nodes -o jsonpath='{.items[0].status.nodeInfo.architecture}')
+          if [ "$ARCH" == "ppc64le" ]; then
+            echo "true"
+          else
+            echo "false"
+          fi
