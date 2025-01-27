@@ -55,10 +55,11 @@ jobs:
           # Produce a binary artifact and place it in the mounted volume
           run: |
             set -x
+            whoami
             lscpu
-            sudo mkdir -p $HOME/.kube && sudo chown -R runner $HOME/.kube
-            sudo microk8s kubectl config view --raw > $HOME/.kube/config
-            sudo chown runner $HOME/.kube/config
-            sudo chmod go-r $HOME/.kube/config
+            mkdir -p $HOME/.kube && sudo chown -R runner $HOME/.kube
+            microk8s kubectl config view --raw > $HOME/.kube/config
+            chown runner $HOME/.kube/config
+            chmod go-r $HOME/.kube/config
             kubectl version
 
