@@ -61,7 +61,7 @@ jobs:
             chmod +x minikube-linux-ppc64le
             mv minikube-linux-ppc64le /usr/local/bin/minikube
 
-            mkdir -p $HOME/.kube && chown -R runner $HOME/.kube
+            mkdir -p $HOME/.kube 
             minikube start --driver=none --force --kubernetes-version=v1.32.0
             minikube status
             kubectl version
