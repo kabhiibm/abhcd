@@ -39,7 +39,7 @@ jobs:
             case "${{ matrix.distro }}" in
               ubuntu*|jessie|stretch|buster|bullseye)
                 apt-get update -q -y
-                apt-get install -q -y git
+                apt-get install -q -y git curl
                 MINIKUBE_VERSION=v1.34.0
                 curl -LO https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-ppc64le
                 chmod +x minikube-linux-ppc64le
