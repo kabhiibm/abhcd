@@ -58,10 +58,11 @@ jobs:
           # Produce a binary artifact and place it in the mounted volume
           run: |
             set -x
+            echo "Arch of platform"
             lscpu
 
-            mkdir -p $HOME/.kube && chown -R runner $HOME/.kube
-            minikube start --driver=none --force --kubernetes-version=v1.32.0
-            minikube status
-            kubectl version
+            #mkdir -p $HOME/.kube && chown -R runner $HOME/.kube
+            #minikube start --driver=none --force --kubernetes-version=v1.32.0
+            #minikube status
+            #kubectl version
 
