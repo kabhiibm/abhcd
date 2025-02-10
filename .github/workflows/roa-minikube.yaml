@@ -39,7 +39,7 @@ jobs:
             case "${{ matrix.distro }}" in
               ubuntu*|jessie|stretch|buster|bullseye)
                 apt-get update -q -y
-                apt-get install -q -y git curl iptables conntrack
+                apt-get install -q -y git curl iptables conntrack docker
                 ;;
               fedora*)
                 dnf -y update
@@ -62,7 +62,7 @@ jobs:
             mv minikube-linux-ppc64le /usr/local/bin/minikube
 
             mkdir -p $HOME/.kube 
-            minikube start --driver=qemu --force --kubernetes-version=v1.32.0
+            minikube start --driver=docker --force --kubernetes-version=v1.32.0
             minikube status
             kubectl version
 
