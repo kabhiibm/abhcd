@@ -62,7 +62,7 @@ jobs:
             mv minikube-linux-ppc64le /usr/local/bin/minikube
 
             mkdir -p $HOME/.kube 
-            minikube start --driver=none --force --kubernetes-version=v1.32.0
+            minikube start --driver=qemu --force --kubernetes-version=v1.32.0
             minikube status
             kubectl version
 
