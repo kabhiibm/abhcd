@@ -56,6 +56,7 @@ jobs:
             set -x
             echo "Arch of platform"
             lscpu
+            apt-get install -q -y docker
             MINIKUBE_VERSION=v1.34.0
             curl -LO https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-ppc64le
             chmod +x minikube-linux-ppc64le
